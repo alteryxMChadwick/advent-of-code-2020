@@ -32,8 +32,8 @@ func TestDay01(t *testing.T) {
 	t.Run("TestTwoMatchingElementsAgain", func(t *testing.T) {
 		left, right := code.GetPair([]int{0, 2020})
 
-		assert.Equal(t, 0, left)
-		assert.Equal(t, 2020, right)
+		assert.Equal(t, 2020, left)
+		assert.Equal(t, 0, right)
 	})
 
 	t.Run("TestNoMatchingElement", func(t *testing.T) {

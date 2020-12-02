@@ -4,12 +4,23 @@ func GetPair(nums []int) (int, int) {
 	if 0 == len(nums) {
 		return 0, 0
 	}
-	for _, first := range nums {
-		for _, inner := range nums {
+
+	uniqueNums := map[int]bool{}
+	for _, num := range nums {
+		uniqueNums[num] = false
+	}
+
+	for first, _ := range uniqueNums {
+		for inner, _ := range uniqueNums {
 			if 2020 == first+inner {
-				return first, inner
+				if first < inner {
+					return inner, first
+				} else {
+					return first, inner
+				}
 			}
 		}
+		delete(uniqueNums, first)
 	}
 
 	return 0, 0
