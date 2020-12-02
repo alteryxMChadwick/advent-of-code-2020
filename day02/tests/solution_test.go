@@ -19,7 +19,7 @@ func TestParse(t *testing.T) {
 		require.Nil(t, err)
 		assert.Equal(t, 1, min)
 		assert.Equal(t, 3, max)
-		assert.Equal(t, "a", req)
+		assert.Equal(t, "a", string(req))
 		assert.Equal(t, "abcde", pwd)
 	})
 }
@@ -50,5 +50,26 @@ func TestDay02(t *testing.T) {
 func BenchmarkDay02(b *testing.B) {
 	for i := 0; i <= b.N; i++ {
 		day02.ValidatePasswords(problemInputs)
+	}
+}
+
+func TestDay02Part2(t *testing.T) {
+	t.Run("ExampleInput", func(t *testing.T){
+		validPwds, err := day02.ValidatePasswordsPart2(exampleInputs)
+
+		require.Nil(t, err)
+		assert.Equal(t, 1, validPwds)
+	})
+	t.Run("ProblemInput", func(t *testing.T) {
+		validPwds, err := day02.ValidatePasswordsPart2(problemInputs)
+
+		require.Nil(t, err)
+		assert.Equal(t, 146, validPwds)
+	})
+}
+
+func BenchmarkDay02Part2(b *testing.B) {
+	for i := 0; i <= b.N; i++ {
+		day02.ValidatePasswordsPart2(problemInputs)
 	}
 }

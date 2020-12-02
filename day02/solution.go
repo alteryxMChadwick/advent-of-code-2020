@@ -6,11 +6,11 @@ import (
 	"strings"
 )
 
-func Parse(input string) (int, int, string, string, error) {
+func Parse(input string) (int, int, byte, string, error) {
 	parts := strings.Split(input, ":")
 
 	if 2 != len(parts) {
-		return -1, -1, "", "", errors.New("invalid argument")
+		return -1, -1, ' ', "", errors.New("invalid argument")
 	}
 
 	reqs := parts[0]
@@ -19,7 +19,7 @@ func Parse(input string) (int, int, string, string, error) {
 	parts = strings.Split(reqs, " ")
 
 	if 2 != len(parts) {
-		return -1, -1, "", "", errors.New("invalid argument")
+		return -1, -1, ' ', "", errors.New("invalid argument")
 	}
 
 	countRange := parts[0]
@@ -28,7 +28,7 @@ func Parse(input string) (int, int, string, string, error) {
 	parts = strings.Split(countRange, "-")
 
 	if 2 != len(parts) {
-		return -1, -1, "", "", errors.New("invalid argument")
+		return -1, -1, ' ', "", errors.New("invalid argument")
 	}
 
 	minStr := parts[0]
@@ -36,14 +36,14 @@ func Parse(input string) (int, int, string, string, error) {
 
 	min, err := strconv.ParseInt(minStr, 10, 32)
 	if err != nil {
-		return -1, -1, "", "", err
+		return -1, -1, ' ', "", err
 	}
 	max, err := strconv.ParseInt(maxStr, 10, 32)
 	if err != nil {
-		return -1, -1, "", "", err
+		return -1, -1, ' ', "", err
 	}
 
-	return int(min), int(max), req, pwd, nil
+	return int(min), int(max), []byte(req)[0], pwd, nil
 }
 
 func ValidatePasswords(inputs []string) (int, error) {
@@ -53,8 +53,34 @@ func ValidatePasswords(inputs []string) (int, error) {
 		if err != nil {
 			return -1, err
 		}
-		count := strings.Count(pwd, req)
+		count := strings.Count(pwd, string(req))
 		if min <= count && count <= max {
+			sum++
+		}
+	}
+
+	return sum, nil
+}
+
+func ValidatePasswordsPart2(inputs []string) (int, error) {
+	sum := 0
+	for _, input := range inputs {
+		first, second, req, pwd, err := Parse(input)
+		if err != nil {
+			return -1, err
+		}
+		valid := false
+		if len(pwd) <= first {
+			if req == []byte(pwd)[first-1] {
+				valid = true
+			}
+		}
+		if len(pwd) <= second {
+			if req == []byte(pwd)[second-1] {
+				valid = !valid
+			}
+		}
+		if valid {
 			sum++
 		}
 	}
