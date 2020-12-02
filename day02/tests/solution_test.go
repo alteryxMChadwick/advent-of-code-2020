@@ -53,6 +53,12 @@ func TestDay02Validate(t *testing.T) {
 	})
 }
 
+func BenchmarkValidateSolo(b *testing.B) {
+	for i := 0; i <= b.N; i++ {
+		day02.ValidatePassword("2-14 b: bbscgbbggprprbjbfbfk")
+	}
+}
+
 func TestDay02(t *testing.T) {
 	t.Run("ExampleInput", func(t *testing.T){
 		validPwds, err := day02.ValidatePasswords(exampleInputs)
@@ -93,6 +99,12 @@ func TestDay02ValidatePart2(t *testing.T) {
 		assert.Nil(t, err)
 		assert.Equal(t, false, valid)
 	})
+}
+
+func BenchmarkValidateSoloPart2(b *testing.B) {
+	for i := 0; i <= b.N; i++ {
+		day02.ValidatePasswordPart2("2-14 b: bbscgbbggprprbjbfbfk")
+	}
 }
 
 func TestDay02Part2(t *testing.T) {
