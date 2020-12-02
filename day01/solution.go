@@ -6,13 +6,8 @@ func GetPair(nums []int) (int, int) {
 		return 0, 0
 	}
 
-	uniqueNums := map[int]bool{}
-	for _, num := range nums {
-		uniqueNums[num] = false
-	}
-
-	for first := range uniqueNums {
-		for second := range uniqueNums {
+	for _, first := range nums {
+		for _, second := range nums {
 			if 2020 == first+second {
 				if first < second {
 					return second, first
@@ -21,8 +16,6 @@ func GetPair(nums []int) (int, int) {
 				}
 			}
 		}
-		//this number isn't part of any combination that makes a solution, remove it from the set before future iterations
-		delete(uniqueNums, first)
 	}
 
 	return 0, 0
@@ -39,23 +32,9 @@ func GetTriplet(nums []int) (int, int, int) {
 		return 0, 0, 0
 	}
 
-	uniqueNums := map[int]int{}
-	for _, num := range nums {
-		uniqueNums[num]++
-	}
-
-	for first := range uniqueNums {
-		for second, count := range uniqueNums {
-			if first == second && count < 2 {
-				continue
-			}
-			for third, count := range uniqueNums {
-				if first == second && second == third && count < 3 {
-					continue
-				}
-				if second == third || first == third && count < 2 {
-					continue
-				}
+	for _, first := range nums {
+		for _, second := range nums {
+			for _, third := range nums {
 				if 2020 == first+second+third {
 					if first <= second && second <= third {
 						return third, second, first
@@ -75,8 +54,6 @@ func GetTriplet(nums []int) (int, int, int) {
 				}
 			}
 		}
-		//this number isn't part of any combination that makes a solution, remove it from the set before future iterations
-		delete(uniqueNums, first)
 	}
 
 	return 0, 0, 0
