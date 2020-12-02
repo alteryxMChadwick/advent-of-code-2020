@@ -32,6 +32,27 @@ func BenchmarkParse(b *testing.B) {
 	}
 }
 
+func TestDay02Validate(t *testing.T) {
+	t.Run(exampleInputs[0], func(t *testing.T){
+		valid, err := day02.ValidatePassword(exampleInputs[0])
+
+		assert.Nil(t, err)
+		assert.Equal(t, true, valid)
+	})
+	t.Run(exampleInputs[1], func(t *testing.T){
+		valid, err := day02.ValidatePassword(exampleInputs[1])
+
+		assert.Nil(t, err)
+		assert.Equal(t, false, valid)
+	})
+	t.Run(exampleInputs[2], func(t *testing.T){
+		valid, err := day02.ValidatePassword(exampleInputs[2])
+
+		assert.Nil(t, err)
+		assert.Equal(t, true, valid)
+	})
+}
+
 func TestDay02(t *testing.T) {
 	t.Run("ExampleInput", func(t *testing.T){
 		validPwds, err := day02.ValidatePasswords(exampleInputs)
@@ -53,6 +74,27 @@ func BenchmarkDay02(b *testing.B) {
 	}
 }
 
+func TestDay02ValidatePart2(t *testing.T) {
+	t.Run(exampleInputs[0], func(t *testing.T){
+		valid, err := day02.ValidatePasswordPart2(exampleInputs[0])
+
+		assert.Nil(t, err)
+		assert.Equal(t, true, valid)
+	})
+	t.Run(exampleInputs[1], func(t *testing.T){
+		valid, err := day02.ValidatePasswordPart2(exampleInputs[1])
+
+		assert.Nil(t, err)
+		assert.Equal(t, false, valid)
+	})
+	t.Run(exampleInputs[2], func(t *testing.T){
+		valid, err := day02.ValidatePasswordPart2(exampleInputs[2])
+
+		assert.Nil(t, err)
+		assert.Equal(t, false, valid)
+	})
+}
+
 func TestDay02Part2(t *testing.T) {
 	t.Run("ExampleInput", func(t *testing.T){
 		validPwds, err := day02.ValidatePasswordsPart2(exampleInputs)
@@ -64,7 +106,7 @@ func TestDay02Part2(t *testing.T) {
 		validPwds, err := day02.ValidatePasswordsPart2(problemInputs)
 
 		require.Nil(t, err)
-		assert.Equal(t, 146, validPwds)
+		assert.Equal(t, 272, validPwds)
 	})
 }
 

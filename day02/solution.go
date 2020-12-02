@@ -46,15 +46,27 @@ func Parse(input string) (int, int, byte, string, error) {
 	return int(min), int(max), []byte(req)[0], pwd, nil
 }
 
+func ValidatePassword(input string) (bool, error) {
+	min, max, req, pwd, err := Parse(input)
+	if err != nil {
+		return false, err
+	}
+	count := strings.Count(pwd, string(req))
+	if min <= count && count <= max {
+		return true, nil
+	}
+
+	return false, nil
+}
+
 func ValidatePasswords(inputs []string) (int, error) {
 	sum := 0
 	for _, input := range inputs {
-		min, max, req, pwd, err := Parse(input)
+		valid, err := ValidatePassword(input)
 		if err != nil {
 			return -1, err
 		}
-		count := strings.Count(pwd, string(req))
-		if min <= count && count <= max {
+		if valid {
 			sum++
 		}
 	}
@@ -62,23 +74,31 @@ func ValidatePasswords(inputs []string) (int, error) {
 	return sum, nil
 }
 
+func ValidatePasswordPart2(input string) (bool, error) {
+	first, second, req, pwd, err := Parse(input)
+	if err != nil {
+		return false, err
+	}
+	valid := false
+	if first-1 <= len(pwd) {
+		if req == []byte(pwd)[first-1] {
+			valid = true
+		}
+	}
+	if second-1 <= len(pwd) {
+		if req == []byte(pwd)[second-1] {
+			valid = !valid
+		}
+	}
+	return valid, nil
+}
+
 func ValidatePasswordsPart2(inputs []string) (int, error) {
 	sum := 0
 	for _, input := range inputs {
-		first, second, req, pwd, err := Parse(input)
+		valid, err := ValidatePasswordPart2(input)
 		if err != nil {
 			return -1, err
-		}
-		valid := false
-		if len(pwd) <= first {
-			if req == []byte(pwd)[first-1] {
-				valid = true
-			}
-		}
-		if len(pwd) <= second {
-			if req == []byte(pwd)[second-1] {
-				valid = !valid
-			}
 		}
 		if valid {
 			sum++
