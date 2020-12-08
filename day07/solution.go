@@ -43,6 +43,43 @@ type BagCount struct {
 	Bag   string
 }
 
+func GetContainedBags(bagList string) ([]BagCount, error) {
+	containedBags := make([]BagCount, 0, 8)
+	for _, bag := range strings.Split(bagList, ", ") {
+		bag, err := NewBag(bag)
+		if nil != err {
+			return nil, err
+		}
+		if nil != bag {
+			containedBags = append(containedBags, *bag)
+		}
+	}
+	return containedBags, nil
+}
+
+func NewBag(bag string) (*BagCount, error) {
+	elements := strings.Split(bag, " ")
+	if 4 != len(elements) && 3 != len(elements) {
+		return nil, errors.New("invalid rule")
+	}
+	if "no" != elements[0] {
+		count, err := strconv.ParseInt(elements[0], 10, 32)
+		if nil != err {
+			return nil, err
+		}
+		return &BagCount{int(count), strings.Join(elements[1:3], " ")}, nil
+	}
+	return nil, nil
+}
+
+func NewBagName(bagName string) (string, error) {
+	bagNameParts := strings.Split(bagName, " ")
+	if 3 != len(bagNameParts) {
+		return "", errors.New("invalid rule")
+	}
+	return strings.Join(bagNameParts[0:2], " "), nil
+}
+
 func BuildRules(rulesBlob string) (map[string][]BagCount, error) {
 	rules := strings.Split(rulesBlob, "\n")
 	returnVal := make(map[string][]BagCount)
@@ -51,28 +88,15 @@ func BuildRules(rulesBlob string) (map[string][]BagCount, error) {
 		if 2 != len(rulePair) {
 			return nil, errors.New("invalid rule")
 		}
-		containedBags := make([]BagCount, 0, 4)
-		for _, bag := range strings.Split(rulePair[1], ", ") {
-			elements := strings.Split(bag, " ")
-			if 4 != len(elements) && 3 != len(elements) {
-				return nil, errors.New("invalid rule")
-			}
-			if "no" != elements[0] {
-				count, err := strconv.ParseInt(elements[0], 10, 32)
-				if nil != err {
-					return nil, err
-				}
-				containedBags = append(containedBags, BagCount{int(count),
-					strings.Join(elements[1:3], " ")})
-			}
+		containedBags, err := GetContainedBags(rulePair[1])
+		if nil != err {
+			return nil, err
 		}
 
-		bagNameParts := strings.Split(rulePair[0], " ")
-		if 3 != len(bagNameParts) {
-			return nil, errors.New("invalid rule")
+		bagName, err := NewBagName(rulePair[0])
+		if nil != err {
+			return nil, err
 		}
-
-		bagName := strings.Join(bagNameParts[0:2], " ")
 
 		returnVal[bagName] = containedBags
 	}
