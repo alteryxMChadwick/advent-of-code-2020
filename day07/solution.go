@@ -58,26 +58,32 @@ func GetContainedBags(bagList string) ([]BagCount, error) {
 }
 
 func NewBag(bag string) (*BagCount, error) {
+	firstIdx := strings.Index(bag, " ")
+	lastIdx := strings.LastIndex(bag, " ")
+	if firstIdx < 0 || len(bag) <= firstIdx || lastIdx < 0 || len(bag) <= lastIdx {
+		return nil, errors.New("invalid rule")
+	}
 	elements := strings.Split(bag, " ")
 	if 4 != len(elements) && 3 != len(elements) {
 		return nil, errors.New("invalid rule")
 	}
-	if "no" != elements[0] {
-		count, err := strconv.ParseInt(elements[0], 10, 32)
+	countStr := bag[0:firstIdx]
+	if "no" != countStr {
+		count, err := strconv.ParseInt(countStr, 10, 32)
 		if nil != err {
 			return nil, err
 		}
-		return &BagCount{int(count), strings.Join(elements[1:3], " ")}, nil
+		return &BagCount{int(count), bag[firstIdx+1:lastIdx]}, nil
 	}
 	return nil, nil
 }
 
 func NewBagName(bagName string) (string, error) {
-	bagNameParts := strings.Split(bagName, " ")
-	if 3 != len(bagNameParts) {
+	idx := strings.LastIndex(bagName, " ")
+	if idx < 0 || len(bagName) <= idx {
 		return "", errors.New("invalid rule")
 	}
-	return strings.Join(bagNameParts[0:2], " "), nil
+	return bagName[0:idx], nil
 }
 
 func BuildRules(rulesBlob string) (map[string][]BagCount, error) {
