@@ -40,9 +40,10 @@ func ParseCommand(cmd string) (Command, error) {
 
 func ParseInstructions(i string) ([]Instruction, error) {
 	ins := make([]Instruction, 0, len(i)/7)
-	for _, instruction := range strings.Split(i, "\n") {
+	for i, instruction := range strings.Split(i, "\n") {
 		parts := strings.Split(instruction, " ")
 		if 2 != len(parts) {
+			println(len(parts), i)
 			return nil, errors.New("invalid instruction")
 		}
 		x, err := strconv.ParseInt(parts[1], 10, 32)
