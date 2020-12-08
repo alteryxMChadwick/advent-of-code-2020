@@ -622,38 +622,31 @@ dark blue bags contain 2 dark violet bags.
 dark violet bags contain no other bags.`
 )
 
-//func TestMakeRulePart1Day07(t *testing.T) {
-//	result := day07.MakeRule("light red bags contain 1 bright white bag, 2 muted yellow bags.")
-//	assert.Equal()
-//}
-//
-//func BenchmarkMakeRulePart1Day07(b *testing.B) {
-//	for i := 0; i <= b.N; i++ {
-//		day07.MakeRule("shiny gold bags contain 1 dark olive bag, 2 vibrant plum bags.")
-//	}
-//}
-
 func TestBagFitsPart1Day07(t *testing.T) {
-	t.Run("False", func (t *testing.T){
-		result := day07.BagFits(map[string][]day07.BagCount {
-			"light red": {{1, "bright white"},{2, "muted yellow"} }},
-			[]day07.BagCount{{1, "bright white"},{2, "muted yellow"}},
+	t.Run("False", func(t *testing.T) {
+		result := day07.BagFits(map[string][]day07.BagCount{
+			"light red": {
+				{1, "bright white"},
+				{2, "muted yellow"}}},
+			[]day07.BagCount{
+				{1, "bright white"},
+				{2, "muted yellow"}},
 			"shiny gold")
 
 		assert.Equal(t, false, result)
 	})
-	t.Run("True", func (t *testing.T){
-		result := day07.BagFits(map[string][]day07.BagCount {
-			"bright white": {{1,"shiny gold"} }},
-			[]day07.BagCount{{1,"shiny gold"}},
+	t.Run("True", func(t *testing.T) {
+		result := day07.BagFits(map[string][]day07.BagCount{
+			"bright white": {{1, "shiny gold"}}},
+			[]day07.BagCount{{1, "shiny gold"}},
 			"shiny gold")
 
 		assert.Equal(t, true, result)
 	})
-	t.Run("TrueNested", func (t *testing.T){
-		result := day07.BagFits(map[string][]day07.BagCount {
-			"bright white": {{1,"shiny gold"} }},
-			[]day07.BagCount{{1,"shiny gold"}},
+	t.Run("TrueNested", func(t *testing.T) {
+		result := day07.BagFits(map[string][]day07.BagCount{
+			"bright white": {{1, "shiny gold"}}},
+			[]day07.BagCount{{1, "shiny gold"}},
 			"shiny gold")
 
 		assert.Equal(t, true, result)
@@ -662,8 +655,8 @@ func TestBagFitsPart1Day07(t *testing.T) {
 
 func BenchmarkBagFitsPart1Day07(b *testing.B) {
 	for i := 0; i <= b.N; i++ {
-		day07.BagFits(map[string][]day07.BagCount {
-			"bright white": {{1, "shiny gold"} }},
+		day07.BagFits(map[string][]day07.BagCount{
+			"bright white": {{1, "shiny gold"}}},
 			[]day07.BagCount{{1, "shiny gold"}},
 			"shiny gold")
 	}

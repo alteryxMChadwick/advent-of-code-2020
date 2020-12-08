@@ -6,7 +6,11 @@ import (
 	"strings"
 )
 
-func BagFits(rules map[string][]BagCount, containedBags []BagCount, bag string) bool {
+func BagFits(
+	rules map[string][]BagCount,
+	containedBags []BagCount,
+	bag string,
+) bool {
 	for _, containedBag := range containedBags {
 		if bag == containedBag.Bag {
 			return true
@@ -75,10 +79,17 @@ func BuildRules(rulesBlob string) (map[string][]BagCount, error) {
 	return returnVal, nil
 }
 
-func BagContains(rules map[string][]BagCount, containingBag string, contained bool) int {
+func BagContains(
+	rules map[string][]BagCount,
+	containingBag string,
+	contained bool,
+) int {
 	count := 0
 	for _, containedBag := range rules[containingBag] {
-		count += containedBag.Count * BagContains(rules, containedBag.Bag, true)
+		count += containedBag.Count * BagContains(
+			rules,
+			containedBag.Bag,
+			true)
 	}
 
 	if contained {
