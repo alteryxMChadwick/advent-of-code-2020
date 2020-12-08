@@ -612,6 +612,14 @@ light brown bags contain 3 mirrored brown bags.
 vibrant magenta bags contain 1 dim green bag.
 shiny brown bags contain 5 bright brown bags, 3 faded cyan bags, 5 clear tan bags, 2 plaid maroon bags.
 drab purple bags contain 1 shiny indigo bag, 4 striped yellow bags.`
+
+	part2ExampleRules = `shiny gold bags contain 2 dark red bags.
+dark red bags contain 2 dark orange bags.
+dark orange bags contain 2 dark yellow bags.
+dark yellow bags contain 2 dark green bags.
+dark green bags contain 2 dark blue bags.
+dark blue bags contain 2 dark violet bags.
+dark violet bags contain no other bags.`
 )
 
 //func TestMakeRulePart1Day07(t *testing.T) {
@@ -711,5 +719,61 @@ func TestCountBagsThatFitProblemPart1Day07(t *testing.T) {
 func BenchmarkCountBagsThatFitProblemPart1Day07(b *testing.B) {
 	for i := 0; i <= b.N; i++ {
 		day07.CountBagsThatFit(part1Rules, "shiny gold")
+	}
+}
+
+func TestBuildRulesPart2Day07(t *testing.T) {
+	parsedRules, err := day07.BuildRulesPart2(part2ExampleRules)
+	require.Equal(t, nil, err)
+
+	shinyGoldBag, ok := parsedRules["shiny gold"]
+	require.True(t, ok)
+	require.Equal(t, 1, len(shinyGoldBag))
+	assert.Equal(t, "dark red", shinyGoldBag[0].Bag)
+	assert.Equal(t, 2, shinyGoldBag[0].Count)
+	darkRedBag, ok := parsedRules["dark red"]
+	require.True(t, ok)
+	require.Equal(t, 1, len(darkRedBag))
+	assert.Equal(t, "dark orange", darkRedBag[0].Bag)
+	assert.Equal(t, 2, darkRedBag[0].Count)
+	darkVioletBag, ok := parsedRules["dark violet"]
+	require.True(t, ok)
+	require.Equal(t, 0, len(darkVioletBag))
+}
+
+func BenchmarkBuildRulesExamplePart2Day07(b *testing.B) {
+	for i := 0; i <= b.N; i++ {
+		day07.BuildRulesPart2(part2ExampleRules)
+	}
+}
+
+func BenchmarkBuildRulesProblemPart2Day07(b *testing.B) {
+	for i := 0; i <= b.N; i++ {
+		day07.BuildRulesPart2(part2ExampleRules)
+	}
+}
+
+func TestCountBagsContainedExamplePart2Day07(t *testing.T) {
+	count, err := day07.CountBagsContained(exampleRules, "shiny gold")
+	require.Equal(t, nil, err)
+
+	assert.Equal(t, 32, count)
+
+	count, err = day07.CountBagsContained(part2ExampleRules, "shiny gold")
+	require.Equal(t, nil, err)
+
+	assert.Equal(t, 126, count)
+}
+
+func TestCountBagsThatFitProblemPart2Day07(t *testing.T) {
+	count, err := day07.CountBagsContained(part1Rules, "shiny gold")
+	require.Equal(t, nil, err)
+
+	assert.Equal(t, 14177, count)
+}
+
+func BenchmarkCountBagsThatFitProblemPart2Day07(b *testing.B) {
+	for i := 0; i <= b.N; i++ {
+		day07.CountBagsContained(part1Rules, "shiny gold")
 	}
 }
