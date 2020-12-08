@@ -6,47 +6,17 @@ import (
 	"strings"
 )
 
-func BagFits(rules map[string][]string, containedBags []string, bag string) bool {
+func BagFits(rules map[string][]BagCount, containedBags []BagCount, bag string) bool {
 	for _, containedBag := range containedBags {
-		if bag == containedBag {
+		if bag == containedBag.Bag {
 			return true
 		}
-		if BagFits(rules, rules[containedBag], bag) {
+		if BagFits(rules, rules[containedBag.Bag], bag) {
 			return true
 		}
 	}
 
 	return false
-}
-
-func BuildRules(rulesBlob string) (map[string][]string, error) {
-	rules := strings.Split(rulesBlob, "\n")
-	returnVal := make(map[string][]string)
-	for _, rule := range rules {
-		rulePair := strings.Split(rule, " contain ")
-		if 2 != len(rulePair) {
-			return nil, errors.New("invalid rule")
-		}
-		containedBags := strings.Split(rulePair[1], ", ")
-		for idx, bag := range containedBags {
-			bag = strings.TrimLeft(bag, "0123456789 ")
-			elements := strings.Split(bag, " ")
-			if 3 != len(elements) && 2 != len(elements) {
-				return nil, errors.New("invalid rule")
-			}
-			containedBags[idx] = strings.Join(elements[0:2], " ")
-		}
-
-		bagNameParts := strings.Split(rulePair[0], " ")
-		if 3 != len(bagNameParts) {
-			return nil, errors.New("invalid rule")
-		}
-
-		bagName := strings.Join(bagNameParts[0:2], " ")
-
-		returnVal[bagName] = containedBags
-	}
-	return returnVal, nil
 }
 
 func CountBagsThatFit(rulesBlob string, bag string) (int, error) {
@@ -69,7 +39,7 @@ type BagCount struct {
 	Bag   string
 }
 
-func BuildRulesPart2(rulesBlob string) (map[string][]BagCount, error) {
+func BuildRules(rulesBlob string) (map[string][]BagCount, error) {
 	rules := strings.Split(rulesBlob, "\n")
 	returnVal := make(map[string][]BagCount)
 	for _, rule := range rules {
@@ -107,9 +77,6 @@ func BuildRulesPart2(rulesBlob string) (map[string][]BagCount, error) {
 
 func BagContains(rules map[string][]BagCount, containingBag string, contained bool) int {
 	count := 0
-	if 0 == len(rules[containingBag]) {
-		return 1
-	}
 	for _, containedBag := range rules[containingBag] {
 		count += containedBag.Count * BagContains(rules, containedBag.Bag, true)
 	}
@@ -122,7 +89,7 @@ func BagContains(rules map[string][]BagCount, containingBag string, contained bo
 }
 
 func CountBagsContained(rulesBlob string, bag string) (int, error) {
-	rules, err := BuildRulesPart2(rulesBlob)
+	rules, err := BuildRules(rulesBlob)
 	if nil != err {
 		return -1, err
 	}

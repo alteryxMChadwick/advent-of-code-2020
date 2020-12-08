@@ -635,25 +635,25 @@ dark violet bags contain no other bags.`
 
 func TestBagFitsPart1Day07(t *testing.T) {
 	t.Run("False", func (t *testing.T){
-		result := day07.BagFits(map[string][]string {
-			"light red": {"bright white", "muted yellow"} },
-			[]string{"bright white", "muted yellow"},
+		result := day07.BagFits(map[string][]day07.BagCount {
+			"light red": {{1, "bright white"},{2, "muted yellow"} }},
+			[]day07.BagCount{{1, "bright white"},{2, "muted yellow"}},
 			"shiny gold")
 
 		assert.Equal(t, false, result)
 	})
 	t.Run("True", func (t *testing.T){
-		result := day07.BagFits(map[string][]string {
-			"bright white": {"shiny gold"} },
-			[]string{"shiny gold"},
+		result := day07.BagFits(map[string][]day07.BagCount {
+			"bright white": {{1,"shiny gold"} }},
+			[]day07.BagCount{{1,"shiny gold"}},
 			"shiny gold")
 
 		assert.Equal(t, true, result)
 	})
 	t.Run("TrueNested", func (t *testing.T){
-		result := day07.BagFits(map[string][]string {
-			"bright white": {"shiny gold"} },
-			[]string{"shiny gold"},
+		result := day07.BagFits(map[string][]day07.BagCount {
+			"bright white": {{1,"shiny gold"} }},
+			[]day07.BagCount{{1,"shiny gold"}},
 			"shiny gold")
 
 		assert.Equal(t, true, result)
@@ -662,9 +662,9 @@ func TestBagFitsPart1Day07(t *testing.T) {
 
 func BenchmarkBagFitsPart1Day07(b *testing.B) {
 	for i := 0; i <= b.N; i++ {
-		day07.BagFits(map[string][]string {
-			"bright white": {"shiny gold"} },
-			[]string{"shiny gold"},
+		day07.BagFits(map[string][]day07.BagCount {
+			"bright white": {{1, "shiny gold"} }},
+			[]day07.BagCount{{1, "shiny gold"}},
 			"shiny gold")
 	}
 }
@@ -676,24 +676,13 @@ func TestBuildRulesPart1Day07(t *testing.T) {
 	vibrantPlumBag, ok := parsedRules["vibrant plum"]
 	require.True(t, ok)
 	require.Equal(t, 2, len(vibrantPlumBag))
-	assert.Equal(t, "faded blue", vibrantPlumBag[0])
-	assert.Equal(t, "dotted black", vibrantPlumBag[1])
+	assert.Equal(t, "faded blue", vibrantPlumBag[0].Bag)
+	assert.Equal(t, 5, vibrantPlumBag[0].Count)
+	assert.Equal(t, "dotted black", vibrantPlumBag[1].Bag)
+	assert.Equal(t, 6, vibrantPlumBag[1].Count)
 	fadedBlueBag, ok := parsedRules["faded blue"]
 	require.True(t, ok)
-	require.Equal(t, 1, len(fadedBlueBag))
-	assert.Equal(t, "no other", fadedBlueBag[0])
-}
-
-func BenchmarkBuildRulesExamplePart1Day07(b *testing.B) {
-	for i := 0; i <= b.N; i++ {
-		day07.BuildRules(exampleRules)
-	}
-}
-
-func BenchmarkBuildRulesProblemPart1Day07(b *testing.B) {
-	for i := 0; i <= b.N; i++ {
-		day07.BuildRules(part1Rules)
-	}
+	require.Equal(t, 0, len(fadedBlueBag))
 }
 
 func TestCountBagsThatFitExamplePart1Day07(t *testing.T) {
@@ -723,7 +712,7 @@ func BenchmarkCountBagsThatFitProblemPart1Day07(b *testing.B) {
 }
 
 func TestBuildRulesPart2Day07(t *testing.T) {
-	parsedRules, err := day07.BuildRulesPart2(part2ExampleRules)
+	parsedRules, err := day07.BuildRules(part2ExampleRules)
 	require.Equal(t, nil, err)
 
 	shinyGoldBag, ok := parsedRules["shiny gold"]
@@ -741,27 +730,39 @@ func TestBuildRulesPart2Day07(t *testing.T) {
 	require.Equal(t, 0, len(darkVioletBag))
 }
 
+func BenchmarkBuildRulesExampleDay07(b *testing.B) {
+	for i := 0; i <= b.N; i++ {
+		day07.BuildRules(exampleRules)
+	}
+}
+
 func BenchmarkBuildRulesExamplePart2Day07(b *testing.B) {
 	for i := 0; i <= b.N; i++ {
-		day07.BuildRulesPart2(part2ExampleRules)
+		day07.BuildRules(part2ExampleRules)
 	}
 }
 
 func BenchmarkBuildRulesProblemPart2Day07(b *testing.B) {
 	for i := 0; i <= b.N; i++ {
-		day07.BuildRulesPart2(part2ExampleRules)
+		day07.BuildRules(part1Rules)
 	}
 }
 
 func TestCountBagsContainedExamplePart2Day07(t *testing.T) {
 	count, err := day07.CountBagsContained(exampleRules, "shiny gold")
 	require.Equal(t, nil, err)
-
 	assert.Equal(t, 32, count)
+
+	count, err = day07.CountBagsContained(exampleRules, "vibrant plum")
+	require.Equal(t, nil, err)
+	assert.Equal(t, 11, count)
+
+	count, err = day07.CountBagsContained(exampleRules, "faded blue")
+	require.Equal(t, nil, err)
+	assert.Equal(t, 0, count)
 
 	count, err = day07.CountBagsContained(part2ExampleRules, "shiny gold")
 	require.Equal(t, nil, err)
-
 	assert.Equal(t, 126, count)
 }
 
